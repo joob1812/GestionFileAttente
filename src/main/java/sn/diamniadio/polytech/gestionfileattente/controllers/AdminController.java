@@ -1,23 +1,23 @@
 package sn.diamniadio.polytech.gestionfileattente.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import sn.diamniadio.polytech.gestionfileattente.models.Queue;
-import sn.diamniadio.polytech.gestionfileattente.services.AdminService;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import sn.diamniadio.polytech.gestionfileattente.services.VisitorService;
 
 @Controller
 public class AdminController {
-    private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+    @Autowired
+    private VisitorService visitorService;
 
-    @GetMapping("/admin/queues")
-    public List<Queue> getAllQueues() {
-        return adminService.getAllQueues();
+    // Méthode pour afficher les files en cours et les numéros associés
+    @GetMapping("/admin/dashboard")
+    public String viewDashboard(Model model) {
+        // On récupère toutes les queues et leur numéro actuel
+        model.addAttribute("queues", visitorService.getAllQueues());
+        model.addAttribute("currentNumbers", visitorService.getCurrentNumbers());
+        return "admin-dashboard"; // Vue pour l'admin
     }
 }

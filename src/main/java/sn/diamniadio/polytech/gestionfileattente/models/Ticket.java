@@ -1,16 +1,28 @@
 package sn.diamniadio.polytech.gestionfileattente.models;
-
 public class Ticket {
+    private String service;
+    private String location;
     private int ticketNumber;
-    private int positionInQueue;
+    private int queuePosition;
     private int peopleAhead;
-    private int currentServingNumber;
+    private int currentNumber;
 
-    public Ticket(int ticketNumber, int positionInQueue) {
-        this.ticketNumber = ticketNumber;
-        this.positionInQueue = positionInQueue;
-        this.peopleAhead = positionInQueue - 1;
-        this.currentServingNumber = -1;  // Not being served at first
+    // Getters et Setters
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public int getTicketNumber() {
@@ -21,12 +33,12 @@ public class Ticket {
         this.ticketNumber = ticketNumber;
     }
 
-    public int getPositionInQueue() {
-        return positionInQueue;
+    public int getQueuePosition() {
+        return queuePosition;
     }
 
-    public void setPositionInQueue(int positionInQueue) {
-        this.positionInQueue = positionInQueue;
+    public void setQueuePosition(int queuePosition) {
+        this.queuePosition = queuePosition;
     }
 
     public int getPeopleAhead() {
@@ -37,11 +49,11 @@ public class Ticket {
         this.peopleAhead = peopleAhead;
     }
 
-    public int getCurrentServingNumber() {
-        return currentServingNumber;
+    public int getCurrentNumber() {
+        return currentNumber;
     }
 
-    public void setCurrentServingNumber(int currentServingNumber) {
-        this.currentServingNumber = currentServingNumber;
+    public void setCurrentNumber(int currentNumber) {
+        this.currentNumber = currentNumber;
     }
 }

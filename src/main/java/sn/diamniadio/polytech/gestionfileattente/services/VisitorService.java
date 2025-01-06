@@ -1,27 +1,64 @@
 package sn.diamniadio.polytech.gestionfileattente.services;
 
-import sn.diamniadio.polytech.gestionfileattente.models.Queue;
-import sn.diamniadio.polytech.gestionfileattente.models.Ticket;
 import org.springframework.stereotype.Service;
+//import sn.diamniadio.polytech.gestionfileattente.models.Queue;
+import sn.diamniadio.polytech.gestionfileattente.models.Ticket;
+
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class VisitorService {
 
-    private final AdminService adminService;
+    private Map<String, Queue<Integer>> queues = new HashMap<>();
+    private Map<String, Integer> currentNumbers = new HashMap<>();
 
-    public VisitorService(AdminService adminService) {
-        this.adminService = adminService;
+    // Récupérer toutes les files d'attente
+    public Map<String, Queue<Integer>> getAllQueues() {
+        return queues;
     }
 
-    public String generateTicket(String serviceName, String location) {
-        Queue queue = adminService.getQueueByServiceAndLocation(serviceName, location);
-        if (queue != null) {
-            Ticket ticket = new Ticket(queue.getCurrentTicketNumber(), queue.getTickets().size() + 1);
-            queue.addTicket(ticket);
-            queue.incrementTicketNumber();
-            return "Votre numéro de ticket est: " + ticket.getTicketNumber() +
-                    ", vous êtes à la " + ticket.getPositionInQueue() + "ème position.";
+    // Récupérer tous les numéros en cours pour chaque file
+    public Map<String, Integer> getCurrentNumbers() {
+        return currentNumbers;
+    }
+
+    public Ticket generateTicket(String service, String location) {
+        String key = service + "-" + location;
+
+        // Vérifie et initialise si nécessaire
+        if (!queues.containsKey(key)) {
+            queues.put(key, new LinkedList<>());
         }
-        return "Service ou localisation introuvables.";
+        if (!currentNumbers.containsKey(key)) {
+            currentNumbers.put(key, 0);
+        }
+
+        Queue<Integer> queue = queues.get(key);
+
+        // Ajouter un nouveau numéro de ticket dans la file
+        int ticketNumber = queue.size() + 1;
+        queue.add(ticketNumber);
+
+        // Création du ticket avec ses détails
+        Ticket ticket = new Ticket();
+        ticket.setService(service);
+        ticket.setLocation(location);
+        ticket.setTicketNumber(ticketNumber);
+        ticket.setQueuePosition(ticketNumber);
+        ticket.setPeopleAhead(ticketNumber - 1);
+        ticket.setCurrentNumber(currentNumbers.get(key));
+
+        return ticket;
+    }
+
+    public int getCurrentNumber(String key) {
+        return currentNumbers.getOrDefault(key, 0);
+    }
+
+    public void setCurrentNumber(String key, int number) {
+        currentNumbers.put(key, number);
     }
 }
